@@ -1,4 +1,5 @@
 const grid = document.querySelector(".grid");
+const scoreDisplay = document.querySelector("#score");
 const blockWidth = 100;
 const blockHeight = 20;
 const ballDiameter = 20;
@@ -7,6 +8,7 @@ const boardHeight = 300;
 let ballSpeed;
 let xBall = 2;
 let yBall = 2;
+let score = 0;
 
 const userStart = [230, 10];
 let currentPosition = userStart;
@@ -106,10 +108,34 @@ function ballMove() {
   checkCollisions();
 }
 
-ballSpeed = setInterval(ballMove, 30);
+ballSpeed = setInterval(ballMove, 20);
 
 //Check Collisions
 function checkCollisions() {
+  // blocks
+  for (let i = 0; i < blocks.length; i++) {
+    if (
+      ballCurrentPosition[0] > blocks[i].bottomLeft[0] &&
+      ballCurrentPosition[0] < blocks[i].bottomRight[0] &&
+      ballCurrentPosition[1] + ballDiameter > blocks[i].bottomLeft[1] &&
+      ballCurrentPosition[1] < blocks[i].topLeft[1]
+    ) {
+      const allBlocks = Array.from(document.querySelectorAll(".block"));
+      allBlocks[i].classList.remove("block");
+      blocks.splice(i, 1);
+      ballDirection();
+      score++;
+      scoreDisplay.innerHTML = score;
+
+      // win
+      if (blocks.length === 0) {
+        scoreDisplay.innerHTML = "YOU WIN!";
+        clearInterval(ballSpeed);
+        document.removeEventListener("keydown", userMove);
+      }
+    }
+  }
+  //wall
   if (
     ballCurrentPosition[0] >= boardWidth - ballDiameter ||
     ballCurrentPosition[1] >= boardHeight - ballDiameter ||
@@ -117,10 +143,20 @@ function checkCollisions() {
   ) {
     ballDirection();
   }
-
-  // game over
+  // user collisions
+  if (
+    ballCurrentPosition[0] > currentPosition[0] &&
+    ballCurrentPosition[0] < currentPosition[0] + blockWidth &&
+    ballCurrentPosition[1] > currentPosition[1] &&
+    ballCurrentPosition[1] < currentPosition[1] + blockHeight
+  ) {
+    ballDirection();
+  }
   if (ballCurrentPosition[1] <= 0) {
+    // game over
     clearInterval(ballSpeed);
+    scoreDisplay.innerHTML = "Game Over";
+    document.removeEventListener("keydown", userMove);
   }
 }
 

@@ -1,10 +1,18 @@
 const grid = document.querySelector(".grid");
 const blockWidth = 100;
 const blockHeight = 20;
+const ballDiameter = 20;
 const boardWidth = 560;
+const boardHeight = 300;
+let ballSpeed;
+let xBall = 2;
+let yBall = 2;
 
 const userStart = [230, 10];
 let currentPosition = userStart;
+
+const ballStart = [270, 40];
+let ballCurrentPosition = ballStart;
 
 // Block
 class Block {
@@ -58,6 +66,11 @@ function userDraw() {
   user.style.left = currentPosition[0] + "px";
   user.style.bottom = currentPosition[1] + "px";
 }
+// Ball Draw
+function ballDraw() {
+  ball.style.left = ballCurrentPosition[0] + "px";
+  ball.style.bottom = ballCurrentPosition[1] + "px ";
+}
 
 // User Movement
 function userMove(e) {
@@ -78,3 +91,54 @@ function userMove(e) {
 }
 
 document.addEventListener("keydown", userMove);
+
+//Ball
+const ball = document.createElement("div");
+ball.classList.add("ball");
+ballDraw();
+grid.appendChild(ball);
+
+// Ball Move
+function ballMove() {
+  ballCurrentPosition[0] += xBall;
+  ballCurrentPosition[1] += yBall;
+  ballDraw();
+  checkCollisions();
+}
+
+ballSpeed = setInterval(ballMove, 30);
+
+//Check Collisions
+function checkCollisions() {
+  if (
+    ballCurrentPosition[0] >= boardWidth - ballDiameter ||
+    ballCurrentPosition[1] >= boardHeight - ballDiameter ||
+    ballCurrentPosition[0] <= 0
+  ) {
+    ballDirection();
+  }
+
+  // game over
+  if (ballCurrentPosition[1] <= 0) {
+    clearInterval(ballSpeed);
+  }
+}
+
+function ballDirection() {
+  if (xBall === 2 && yBall === 2) {
+    yBall = -2;
+    return;
+  }
+  if (xBall === 2 && yBall === -2) {
+    xBall = -2;
+    return;
+  }
+  if (xBall === -2 && yBall === -2) {
+    yBall = 2;
+    return;
+  }
+  if (xBall === -2 && yBall === 2) {
+    xBall = 2;
+    return;
+  }
+}

@@ -1,8 +1,14 @@
+body {
+    background-color: #18385d
+}
+
 .grid {
-    position: absolute;
+    margin: auto;
+    position: relative;
     width: 560px;
     height: 300px;
     border: solid black 1px;
+    background-color: #465f7d    ;
 }
 
 .block {
@@ -24,5 +30,12 @@
     width: 20px;
     height: 20px;
     border-radius: 10px;
-    background-color: #7D1E6A ;
+    background-color: #C6FFA6 ;
+}
+
+#score {
+    text-align: center;
+    font-size: 4rem;
+    color: #DFA6FF;
+    font-family: "DotGothic16";
 }
